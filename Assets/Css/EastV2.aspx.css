@@ -1,0 +1,232 @@
+﻿/* @begin East.aspx.css */
+
+/* general */
+html
+{
+    font-size: 16px;
+}
+
+body
+{
+    font-size: 0.875em; /*16 x 0,875 = 14px */
+    line-height: 1em;
+    padding: 1em;
+}
+
+div
+{
+}
+
+tr
+{
+}
+
+th
+{
+    height: 3.75em; /* 16 x 3,75 = 60px */
+    line-height: 1.25em; /* 16 x 1.25 = 20 */
+}
+
+td
+{
+}
+
+table
+{
+}
+
+/* --- Rows --- */
+.HeaderStyle
+{
+    background-color: lightgray;
+}
+.RowStyle
+{
+    background-color: lightgoldenrodyellow;
+}
+
+.AlternatingRowStyle
+{
+    background-color: lightgoldenrodyellow;
+}
+
+/* .RowTomorrow indicathes the row represents data for tomorrow */
+.RowTomorrow
+{
+}
+
+.FooterStyle
+{
+    background-color: lightcyan;
+    text-align: center;
+}
+
+
+/*--- GridView Cells ---*/
+
+/* Number GridView cell */
+.Number
+{
+    text-align: right;
+}
+
+/* Time GridView cell */
+.Time
+{
+    text-align: center;
+}
+
+.Text {
+    text-align: left;
+}
+
+.th textarea {
+    text-align: center;
+}
+
+/* Graphical bar GrieView cell */
+.Bar
+{
+}
+/* image displaying colored bar */
+.PriceImage
+{
+    /* The height of the image, must explicit be specified height defaults to width. Recomended value to td.height - 3. */
+    height: 17px;
+}
+
+/* Rank GridView cell */
+.Rank
+{
+    text-align: right;
+}
+
+/* Label with date */
+.Date
+{
+    text-align: center;
+}
+
+/* Tomorrow indicathes the field contains data for tomorrow */
+.Tomorrow
+{
+    background-color: powderblue;
+}
+
+/* Row with buttons and labels */
+.DateSelection
+{
+    height: 40px;
+}
+
+/* Button default */
+.Button
+{
+    background-color: green;
+    margin: 2px;
+    width: 140px;
+    color: yellow;
+}
+
+/* Any Button Selected */
+.Selected
+{
+    background-color: red;
+    color: white;
+}
+
+/* --- Columns --- */
+
+/* Col for sorting by date */
+.Col_Hidden 
+{
+    display: none;
+}
+
+/* period start time*/
+.Col_StartTime
+{
+    width: 50px;
+}
+.RowTomorrow .Col_StartTime
+{
+    /* show tomorrows data in different style */
+    background-color: powderblue;
+}
+
+.RowYesterday 
+{
+    /* show tomorrows data in different style */
+    background-color: lightgray;
+}
+
+/* period end time */
+.Col_EndTime
+{
+    width: 50px;
+}
+.RowTomorrow 
+{
+    /* show tomorrows data in different style */
+    background-color: powderblue;
+}
+
+.RowYesterday .Col_EndTime
+{
+    /* show tomorrows data in different style */
+    background-color: red;
+}
+
+/* Nord Pool Spot price */
+.Col_NordPoolSpot
+{
+    width: 100px;
+}
+.RowTomorrow .Col_NordPoolSpot
+{
+    /* show tomorrows data in different style */
+}
+
+/* Customer Price*/
+.Col_CustomerPrice
+{
+    width: 100px;
+}
+.RowTomorrow .Col_CustomerPrice
+{
+    /* show tomorrows data in different style */
+}
+
+.Col_ReducedCustomerPrice
+{
+    width: 100px;
+}
+
+/* Graphical Price */
+.Col_GraphicalPrice
+{
+    width: 350px;
+}
+.RowTomorrow .Col_GraphicalPrice
+{
+    /* show tomorrows data in different style */
+}
+
+.Col_Calculation
+{
+    width: 600px;
+}
+
+/* Rank */
+.Col_Rank
+{
+    width: 50px;
+}
+.RowTomorrow .Col_Rank
+{
+    /* show tomorrows data in different style */
+    background-color: powderblue;
+}
+
+
+/* @end East.aspx.css */
