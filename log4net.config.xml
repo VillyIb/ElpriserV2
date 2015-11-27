@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<log4net>
+  <!-- 
+    Default appender.
+  -->
+  <appender name="All" type="log4net.Appender.RollingFileAppender">
+    <file type="log4net.Util.PatternString" value="C:\NordPoolSpotV2\Log\Elpriser.log" />
+    <appendToFile value="True" />
+
+    <rollingStyle value="Size" />
+
+    <!-- Customer Option Specify KB|MB|GB -->
+    <maximumFileSize value="10MB" />
+
+    <!-- Customer Option -->
+    <maxSizeRollBackups value="10" />
+
+    <immediateFlush value="True" />
+    <countDirection value="-1" />
+    <!-- lockingModel type="log4net.Appender.FileAppender+ExclusiveLock" / -->
+    <lockingModel type="log4net.Appender.FileAppender+MinimalLock" />
+
+
+    <!--<layout type="log4net.Layout.XmlLayoutSchemaLog4j">-->
+    <layout type="log4net.Layout.PatternLayout">
+      <!-- <conversionPattern value="%threadT %-5level [%property{Operation}] %utcdate{yyyy-MM-dd HH:mm:ss,fff} %ndc %logger{9}.%M:'%message'%newline" /> -->
+      <!--<conversionPattern value='%utcdate{yyyy-MM-dd HH:mm:ss,fff} B%-7thread %-7level [%property{TrackAlias}] %ndc ‡%logger{9}-%M:"%message"%newline' />-->
+      <!--<conversionPattern value='%utcdate{yyyy-MM-dd HH:mm:ss,fff} B%-7thread %-7level %ndc ‡%logger{9}-%M:"%message"%newline' />-->
+      <conversionPattern value='%utcdate{yyyy-MM-dd HH:mm:ss,fff} B%-7thread %-7level %ndc ‡%logger{9}:"%message"%newline' />
+    </layout>
+
+
+  </appender>
+
+  <!-- LOGGERS -->
+  <!-- Standard levels: OFF|EMERGENCY|FATAL|ALERT|CRITICAL|SEVERE|ERROR|WARN|NOTICE|INFO|DEBUG|FINE|TRACE|FINER|VERBOSE|FINEST|ALL -->
+
+  <!-- The root logger is defining the default level -->
+  <root>
+    <!-- 
+      Notice for services is the Threshold set at runtime by a registry setting.
+      This requires the root level to be set at the most detailed level expected.
+    -->
+    <level value="All" />
+
+    <!-- Add all the appenders here -->
+    <!-- syntax: <appender-ref ref="AppenderName" />-->
+
+    <appender-ref ref="All" />
+
+  </root>
+
+  <!-- Explicit control the logging of program flow using the Tracer -->
+  <logger name="namespace">
+    level value="Info"
+  </logger>
+
+</log4net>

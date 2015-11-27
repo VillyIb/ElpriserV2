@@ -1,5 +1,8 @@
-﻿using System;
+﻿#define DEBUG
+using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Diagnostics;
 using System.Drawing;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -14,21 +17,25 @@ namespace EU.Iamia.Elpriser
 
         private List<PresentationEntity> BusinessData { get; set; }
 
+
         /// <summary>
         ///  Controls graph offsett.
         /// </summary>
         private decimal XpMinValueYsS { get; set; }
+
 
         /// <summary>
         /// Controls graph max value.
         /// </summary>
         private decimal XpMaxVaueYsS { get; set; }
 
+
         private BusinessContext zBusinessContext;
         private BusinessContext BusinessContext
         {
             get { return zBusinessContext ?? (zBusinessContext = new BusinessContext()); }
         }
+
 
         private static void CssModify(Style control, String addCss, params String[] removeCss)
         {
@@ -49,6 +56,7 @@ namespace EU.Iamia.Elpriser
             control.CssClass = control.CssClass.Replace("  ", " ").Trim(); // remove double spaces.
         }
 
+
         private static void CssModify(WebControl control, String addCss, params String[] removeCss)
         {
             foreach (var toRemove in removeCss)
@@ -67,6 +75,7 @@ namespace EU.Iamia.Elpriser
 
             control.CssClass = control.CssClass.Replace("  ", " ").Trim(); // remove double spaces.
         }
+
 
         private void LoadBusinessData()
         {
@@ -106,6 +115,7 @@ namespace EU.Iamia.Elpriser
             BusinessData = BusinessContext.TimeSlotInformation;
         }
 
+
         private class GridSource
         {
             // ReSharper disable UnusedAutoPropertyAccessor.Local
@@ -139,6 +149,7 @@ namespace EU.Iamia.Elpriser
 
             // ReSharper restore UnusedAutoPropertyAccessor.Local
         }
+
 
         private void XmSetupGrid()
         {
@@ -233,8 +244,8 @@ namespace EU.Iamia.Elpriser
 
             //XuTomorrow.Enabled = BusinessContext.HasTomorrowData;
             XuTomorrow.Visible = BusinessContext.HasTomorrowData;
-
         }
+
 
         private static void SwitchVisibility(DataControlField target, DataControlRowType rowType, bool visible)
         {
@@ -265,99 +276,122 @@ namespace EU.Iamia.Elpriser
 
         }
 
+
+        // --- Events ---
+
         // see: http://stackoverflow.com/questions/785670/how-to-change-my-image-dataimageurlformatstring-value-inside-my-gridview-in-code
 
         protected void GridView1_RowDataBound(object sender, GridViewRowEventArgs eventArgs)
         {
-            var today = DateTime.Now.Date;
-
-            var gridSource = eventArgs.Row.DataItem as GridSource;
-
-            // ---Header and all rows ---
-            if (eventArgs.Row.RowIndex < 1) // -1 (header), 0...n-1 (item rows)
+            try
             {
-                foreach (DataControlFieldCell col in eventArgs.Row.Cells)
+                var today = DateTime.Now.Date;
+
+                var gridSource = eventArgs.Row.DataItem as GridSource;
+
+                // ---Header and all rows ---
+                if (eventArgs.Row.RowIndex < 1) // -1 (header), 0...n-1 (item rows)
                 {
-                    // Note ContainingField is the definition not the individual rows.
-
-                    var markercss = String.Format(" {0} ", col.ContainingField.ControlStyle.CssClass);
-
-                    if (markercss.IndexOf(" MarkerCalculationOn ", StringComparison.OrdinalIgnoreCase) >= 0)
+                    foreach (DataControlFieldCell col in eventArgs.Row.Cells)
                     {
-                        SwitchVisibility(col.ContainingField, eventArgs.Row.RowType, visible: XuShowCalculation.Checked);
-                    }
+                        // Note ContainingField is the definition not the individual rows.
 
-                    if (markercss.IndexOf("MarkerCalculationOff ", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        SwitchVisibility(col.ContainingField, eventArgs.Row.RowType,
-                                         visible: !(XuShowCalculation.Checked));
-                    }
-                }
-            }
+                        var markercss = String.Format(" {0} ", col.ContainingField.ControlStyle.CssClass);
 
-            // --- Individual Rows ---
-            if (eventArgs.Row.RowType == DataControlRowType.DataRow)
-            {
-                var showTomorrow = false;
-                var showYesterday = false;
-
-                if (gridSource != null)
-                {
-                    showTomorrow = gridSource.SlotBeginCurrent.Date > today;
-                    showYesterday = gridSource.SlotBeginCurrent.Date < today;
-                }
-
-                foreach (DataControlFieldCell col in eventArgs.Row.Cells)
-                {
-                    var markercss = String.Format(" {0} ", col.ContainingField.ControlStyle.CssClass);
-
-                    if (markercss.IndexOf(" MarkerDayOffsett ", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        CssModify(
-                            col
-                            , showTomorrow ? "RowTomorrow" : showYesterday ? "RowYesterday" : "RowToday"
-                            , "RowTomorrow", "RowYesterday", "RowToday"
-                            );
-                    }
-
-                    if (markercss.IndexOf(" MarkerGraph ", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        if (col.Controls.Count > 0)
+                        if (markercss.IndexOf(" MarkerCalculationOn ", StringComparison.OrdinalIgnoreCase) >= 0)
                         {
-                            var img = col.Controls[0] as System.Web.UI.WebControls.Image;
-                            if (img != null && gridSource != null)
-                            {
-                                var width = gridSource.GraphValue;
+                            SwitchVisibility(col.ContainingField, eventArgs.Row.RowType,
+                                             visible: XuShowCalculation.Checked);
+                        }
 
-                                img.ControlStyle.Width = width;
-                                img.ControlStyle.Height = 20;
-                            }
+                        if (markercss.IndexOf("MarkerCalculationOff ", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            SwitchVisibility(col.ContainingField, eventArgs.Row.RowType,
+                                             visible: !(XuShowCalculation.Checked));
                         }
                     }
                 }
 
-            } // row
+                // --- Individual Rows ---
+                if (eventArgs.Row.RowType == DataControlRowType.DataRow)
+                {
+                    var showTomorrow = false;
+                    var showYesterday = false;
 
+                    if (gridSource != null)
+                    {
+                        showTomorrow = gridSource.SlotBeginCurrent.Date > today;
+                        showYesterday = gridSource.SlotBeginCurrent.Date < today;
+                    }
+
+                    foreach (DataControlFieldCell col in eventArgs.Row.Cells)
+                    {
+                        var markercss = String.Format(" {0} ", col.ContainingField.ControlStyle.CssClass);
+
+                        if (markercss.IndexOf(" MarkerDayOffsett ", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            CssModify(
+                                col
+                                , showTomorrow ? "RowTomorrow" : showYesterday ? "RowYesterday" : "RowToday"
+                                , "RowTomorrow", "RowYesterday", "RowToday"
+                                );
+                        }
+
+                        if (markercss.IndexOf(" MarkerGraph ", StringComparison.OrdinalIgnoreCase) >= 0)
+                        {
+                            if (col.Controls.Count > 0)
+                            {
+                                var img = col.Controls[0] as System.Web.UI.WebControls.Image;
+                                if (img != null
+                                    && gridSource != null)
+                                {
+                                    var width = gridSource.GraphValue;
+
+                                    img.ControlStyle.Width = width;
+                                    img.ControlStyle.Height = 20;
+                                }
+                            }
+                        }
+                    }
+
+                } // row
+            }
+            catch (Exception ex)
+            {
+                Debug.Print(ex.ToString());
+            }
         }
+
 
         protected void Page_Load(object _Sender, EventArgs _E)
         {
-            if (!(IsPostBack))
+            try
             {
-                Logger.InfoFormat("Request from IP: {0}", Request.UserHostAddress);
+                Debug.Print("Log_ConfigFile: '{0}'", ConfigurationManager.AppSettings["Log_ConfigFile"]);
+
+                if (!(IsPostBack))
+                {
+                    Logger.InfoFormat("Request from IP: {0}", Request.UserHostAddress);
+                }
+
+                XpMinValueYsS = 1.7m; // offesett graph
+                XpMaxVaueYsS = 2.5m;  // limit graph 
+
+                {
+                    LoadBusinessData();
+                    XmSetupGrid();
+                }
             }
-
-            XpMinValueYsS = 1.7m; // offesett graph
-            XpMaxVaueYsS = 2.5m;  // limit graph 
-
+            catch (Exception ex)
             {
-                LoadBusinessData();
-                XmSetupGrid();
+                Debug.Print(ex.ToString());
             }
         }
 
+
         protected void UxUpdate_Click(object sender, EventArgs e)
         { }
+
 
         protected void XuRolling_CheckedChanged(object sender, EventArgs e)
         { }
